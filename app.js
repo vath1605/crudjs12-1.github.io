@@ -1,24 +1,25 @@
 const nameInput = document.querySelector('#nameInput');
 const emailInput = document.querySelector('#emailInput');
-const fileInput = document.querySelector('#fileInput').files[0];
+const fileInput = document.querySelector('#fileInput');
 const searchInput = document.querySelector('#searchInput');
-const genderInput = document.querySelector('input[name="gender"]:checked')?.value;
 const saveBtn = document.querySelector('#saveBtn');
 const tbody = document.querySelector('tbody');
 const counter = document.querySelector('#counter');
+const originalPlaceholder = searchInput.placeholder;
 
 let students = [];
+let editIndex = -1;
 
 function displayStudent(stu = students) {
-    if ((stu.length === 0)) {
+    if (stu.length === 0) {
         tbody.innerHTML = `
                 <tr><td colspan="6" class="text-center">No students found</td></tr>
         `;
     } else {
         tbody.innerHTML = '';
         stu.forEach((student, index) => {
-            const tr = document.createElement('tr');
-            tr += `
+            let tr = document.createElement('tr');
+            tr.innerHTML += `
                 <tr>
                     <td>${student.id}</td>
                     <td>${student.name}</td>
@@ -61,7 +62,56 @@ function updateCounter(stu = students) {
 </svg> ${stu.length}
     `;
 }
-document.addEventListener('DOMContentLoaded',function(){
+document.addEventListener('DOMContentLoaded', function () {
     updateCounter(students);
     displayStudent(students);
 })
+function animateClearPlaceholder() {
+    searchInput.classList.add('placeholder-hidden');
+    setTimeout(() => {
+        searchInput.placeholder = '';
+    }, 300);
+}
+
+function animateRestorePlaceholder() {
+    searchInput.placeholder = originalPlaceholder;
+    setTimeout(() => {
+        searchInput.classList.remove('placeholder-hidden');
+    }, 10);
+}
+function saveStudent() {
+    let gender = document.querySelector('input[name="gender"]:checked')?.value;
+    let file = fileInput.files[0];
+    let name = nameInput.value.trim();
+    let email = emailInput.value.trim();
+    let id = students.length + 1;
+
+    let student = {
+        id: id,
+        name: name,
+        gen: gender,
+        email: email
+    }
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            student.image = e.target.result;
+            finalSave(student)
+        }
+        reader.readAsDataURL(file);
+    }
+}
+function finalSave(student) {
+    if (editIndex === -1) {
+        students.push(student);
+    } else {
+        students[editIndex] = student;
+        editIndex = -1;
+        saveBtn.textContent = "Save Changes";
+    }
+    document.querySelector('form').reset();
+    document.querySelector('#exampleModal').querySelector('.btn-close').click();
+    displayStudent(students);
+    updateCounter(students);
+}
+saveBtn.addEventListener('click', saveStudent);
