@@ -3,7 +3,7 @@ const emailInput = document.querySelector('#emailInput');
 const fileInput = document.querySelector('#fileInput');
 const searchInput = document.querySelector('#searchInput');
 const saveBtn = document.querySelector('#saveBtn');
-const tbody = document.querySelector('tbody');
+const tbody = document.querySelector('#tbody');
 const counter = document.querySelector('#counter');
 const originalPlaceholder = searchInput.placeholder;
 
@@ -25,9 +25,9 @@ function displayStudent(stu = students) {
                     <td>${student.name}</td>
                     <td>${student.gen}</td>
                     <td>${student.email}</td>
-                    <td><img style="width: 2.9rem; height: 2.9rem;" class="rounded-circle" src="${student.image}" alt=""></td>
+                    <td><img style="width: 2.9rem; height: 2.9rem;" class="rounded-circle object-fit-cover" src="${student.image}" alt=""></td>
                     <td>
-                        <span onclick="viewStudent(${index})" class="btn btn-primary align-middle"><svg xmlns="http://www.w3.org/2000/svg" 
+                        <span data-bs-toggle="modal" data-bs-target="#view" onclick="viewStudent(${index})" class="btn btn-primary align-middle"><svg xmlns="http://www.w3.org/2000/svg" 
                         width="19" height="19" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
                             <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 
                             8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332
@@ -115,3 +115,27 @@ function finalSave(student) {
     updateCounter(students);
 }
 saveBtn.addEventListener('click', saveStudent);
+function viewStudent(index) {
+    let stu = students[index];
+    let myTb = document.querySelector('#tb');
+    myTb.innerHTML = `
+        <tr>
+            <td class="text-start"><h6>Name </h6></td>
+            <td><h6>: ${stu.name}</h6></td>
+        </tr>
+        <tr>
+            <td class="text-start"><h6>ID </h6></td>
+            <td><h6>: ${stu.id}</h6></td>
+        </tr>
+        <tr>
+            <td class="text-start"><h6>Gender </h6></td>
+            <td><h6>: ${stu.gen}</h6></td>
+        </tr>
+        <tr>
+            <td class="text-start"><h6>Email </h6></td>
+            <td><h6>: ${stu.email}</h6></td>
+        </tr>
+    `;
+    let con = document.querySelector('#img');
+    con.innerHTML = `<img style="width: 8rem; height: 8rem; padding: 1px;" class="object-fit-cover border border-dark-subtle card-img-top rounded-circle" src="${stu.image}" alt="">`;
+}
