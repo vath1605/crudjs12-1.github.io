@@ -84,10 +84,10 @@ function saveStudent() {
     let file = fileInput.files[0];
     let name = nameInput.value.trim();
     let email = emailInput.value.trim();
-    let id = students.length + 1;
+    let id = students.length;
 
     let student = {
-        id: id,
+        id: id+1,
         name: name,
         gen: gender,
         email: email
@@ -96,15 +96,17 @@ function saveStudent() {
         const reader = new FileReader();
         reader.onload = function (e) {
             student.image = e.target.result;
-            finalSave(student)
+            finalSave(student,id);
         }
         reader.readAsDataURL(file);
     }
 }
-function finalSave(student) {
+function finalSave(student,id) {
     if (editIndex === -1) {
         students.push(student);
     } else {
+        student.id = id;
+
         students[editIndex] = student;
         editIndex = -1;
         saveBtn.textContent = "Save Changes";
@@ -138,4 +140,19 @@ function viewStudent(index) {
     `;
     let con = document.querySelector('#img');
     con.innerHTML = `<img style="width: 8rem; height: 8rem; padding: 1px;" class="object-fit-cover border border-dark-subtle card-img-top rounded-circle" src="${stu.image}" alt="">`;
+}
+function editStudent(index){
+    editIndex = index;
+    let stu = students[editIndex];
+    nameInput.value = stu.name;
+    emailInput.value = stu.email;
+    if(stu.gen === 'Male'){
+        document.querySelector('#male').checked = true;
+    }else if(stu.gen === 'Female'){
+        document.querySelector('#female').checked = true;
+    }else{
+        document.querySelector('#other').checked = true;
+    }
+    saveBtn.textContent = 'Update';
+    document.querySelector('#addBtn').click();
 }
