@@ -106,7 +106,6 @@ function finalSave(student,id) {
         students.push(student);
     } else {
         student.id = id;
-
         students[editIndex] = student;
         editIndex = -1;
         saveBtn.textContent = "Save Changes";
@@ -156,3 +155,25 @@ function editStudent(index){
     saveBtn.textContent = 'Update';
     document.querySelector('#addBtn').click();
 }
+function deleteStudent(index){
+    if(confirm("Are u sure to delete ? ")){
+        students.splice(index,1);
+        updateCounter(students);
+        displayStudent(students);
+    }
+}
+
+
+searchInput.addEventListener('input', function(){
+    let searchText = searchInput.value.toLowerCase().trim();
+    if(searchInput===''){
+        displayStudent(students);
+        return;
+    }
+    let newArr = students.filter(stu =>
+        stu.name.toLowerCase().includes(searchText) || 
+        stu.gen.toLowerCase().includes(searchText)
+    );
+    displayStudent(newArr);
+    
+});
